@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Confirmation System</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('form').submit(function(event) {
+                event.preventDefault(); // Prevent the form from submitting normally
+
+                var form = $(this);
+                var url = form.attr('action');
+                var method = form.attr('method');
+                var data = form.serialize();
+
+                $.ajax({
+                    url: url,
+                    method: method,
+                    data: data,
+                    success: function(response) {
+                        console.log(response);
+                        form.closest('li').remove(); // Remove the parent li element
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Text Confirmation System</h1>
+    <h2>Received Texts:</h2>
+    <ul>
+        {% for text in texts %}
+            <li>
+                {{ text }}
+                <form action="/confirm" method="POST" style="display: inline;">
+                    <input type="hidden" name="text" value="{{ text }}">
+                    <button type="submit">Confirm</button>
+                </form>
+                <form action="/deny" method="POST" style="display: inline;">
+                    <input type="hidden" name="text" value="{{ text }}">
+                    <button type="submit">Deny</button>
+                </form>
+            </li>
+            <br><br>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+
+
